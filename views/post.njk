@@ -1,0 +1,8 @@
+{% extends "layout.njk" %}
+{% block content %}
+<h1 style="color: white; text-align: center; margin-top: 15%; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"> Qvittra lilla fågel</h1>
+<form style="text-align: center; margin-top: 5%;" action="/Qveets" method="POST">
+    <input type="text" name="message">
+    <button type="submit">Lägg till post</button>
+  </form>
+{% endblock %}

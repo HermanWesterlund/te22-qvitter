@@ -1,0 +1,45 @@
+body {
+    font-family: sans-serif;
+    font-size: 1.2rem;
+    background-color: black;
+    color: white;
+  }
+  
+  main {
+    width: min(100% - 3rem, var(--container-max, 60ch));
+    margin-inline: auto;
+  }
+  
+  .tweets {
+    padding: 2%;
+    margin: 0;
+    list-style: none;
+    border: 2px solid;
+  }
+  
+  .tweet {
+    margin-bottom: 1rem;
+  }
+  
+  .tweet header {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .tweet footer {
+    padding-top: 1rem;
+  }
+  
+  .tweet footer ul {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    padding-left: 50%;
+    margin: 0;
+    justify-content: space-between;
+    align-items: center;
+  }
