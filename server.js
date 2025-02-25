@@ -2,6 +2,7 @@ import "dotenv/config"
 import express from "express"
 import nunjucks from "nunjucks"
 import indexRouter from "./routes/index.js"
+import tweetsRouter from "./routes/tweets.js"
 import bodyParser from "body-parser"
 
 const app = express()
@@ -16,6 +17,8 @@ nunjucks.configure("views", {
 app.use(express.static("public"))
 
 app.use("/", indexRouter)
+
+app.use("/tweets", tweetsRouter)
 
 app.use(express.json())
 

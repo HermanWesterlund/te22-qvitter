@@ -1,0 +1,9 @@
+{% extends "layout.njk" %}
+{% block content %}
+    <h1 style="color: white; text-align: center; margin-top: 15%; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"> Qvittra lilla fågel</h1>
+  <form style="text-align: center; margin-top: 5%;" action="/tweets/edit" method="post">
+    <input type="hidden" name="id" value="{{ tweet.id }}">
+    <input id="message" name="message" value="{{ tweet.message }}">
+    <button type="submit">Edit</button>
+  </form>
+{% endblock %}

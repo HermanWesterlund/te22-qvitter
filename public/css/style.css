@@ -9,6 +9,10 @@ body {
     width: min(100% - 3rem, var(--container-max, 60ch));
     margin-inline: auto;
   }
+
+  .orski {
+    padding-right: 10%;
+  }
   
   .tweets {
     padding: 2%;
