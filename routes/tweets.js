@@ -10,7 +10,7 @@ router.get("/:id/delete", async (req, res) => {
     return res.status(400).send("Invalid ID")
   }
   await pool.promise().query("DELETE FROM tweet WHERE id = ?", [id])
-  res.redirect("/")
+  res.redirect("/feed")
 })
 
 router.post("/delete",
@@ -25,7 +25,7 @@ router.post("/delete",
   const id = matchedData(req).id
 
   await pool.promise().query("DELETE FROM tweet WHERE id = ?", [id])
-  res.redirect("/")
+  res.redirect("/feed")
 })
 
 router.get("/:id/edit", async (req, res) => {
@@ -51,7 +51,7 @@ router.get("/:id/edit", async (req, res) => {
   
     const { id, message } = matchedData(req)
     await pool.promise().query("UPDATE tweet SET message = ? WHERE id = ?", [message, id])
-    res.redirect("/")
+    res.redirect("/feed")
   })
 
 export default router

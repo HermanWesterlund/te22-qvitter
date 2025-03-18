@@ -4,6 +4,8 @@ import nunjucks from "nunjucks"
 import indexRouter from "./routes/index.js"
 import tweetsRouter from "./routes/tweets.js"
 import bodyParser from "body-parser"
+import logger from "morgan"
+import session from "express-session"
 
 const app = express()
 
@@ -16,6 +18,15 @@ nunjucks.configure("views", {
 
 app.use(express.static("public"))
 
+app.use(logger("dev"))
+
+app.use(session({
+    secret: "keyboard cat",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { sameSite: true }
+  }))
+
 app.use("/", indexRouter)
 
 app.use("/tweets", tweetsRouter)
@@ -23,6 +34,7 @@ app.use("/tweets", tweetsRouter)
 app.use(express.json())
 
 app.use(bodyParser.urlencoded({extended: true}))
+  
 
 app.listen(port, () => {
     console.log(`Exampel app listening at http://localhost:${port}`)

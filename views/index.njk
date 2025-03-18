@@ -2,46 +2,5 @@
 {% block content %}
 <main>
   <h1 style="margin-top: 5%; border: solid 2px; padding: 2%; text-align: center;">{{ title }}</h1>
-  <p>{{ message }}</p>
-  <ul class="tweets">
-    {% for tweet in tweets %}
-      <li class="tweet">
-        <article>
-          <header>
-            <h2>{{ tweet.name }}</h2>
-            <time style="font-size: small;" datetime="{{ tweet.updated_at }}">{{ tweet.updated_at }}</time>
-          </header>
-          <p style="font-style: italic;">{{ tweet.message }}</p>
-          <footer class="orski">
-            <ul>
-              <li>Shared</li>
-              <li>Reply</li>
-              <li>Favourite</li>
-              <li>
-                <a href="/tweets/{{ tweet.id }}/edit" class="button-icon">
-                  <span>
-                    edit
-                  </span>
-                </a>
-              </li>
-  
-              <li>
-                <form action="/tweets/delete" method="post">
-                  <input type="hidden" name="id" value="{{ tweet.id }}">
-                  <button type="submit" class="button-icon">
-                    <span>
-                      delete
-                    </span>
-                  </button>
-                </form>
-              </li>
-            </ul>
-          </footer>
-        </article>
-      </li>
-    {% endfor %}
-  </ul>
-  <br>
-  <form action="/post" style="padding-bottom: 5%;"><button type="submit">Posta eget</button></form>
-</main>
+  <p>views: {{ views }}</p>
 {% endblock %}
