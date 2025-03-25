@@ -7,22 +7,21 @@ const router = express.Router()
 
 router.use(bodyParser.urlencoded({extended: true}))
 
-let myPlaintextPassword = "detlösenordsomduvillha"
-bcrypt.hash(myPlaintextPassword, 10, function(err, hash) {
-	// här får vi nu tag i lösenordets hash i variabeln hash
-	console.log(hash)
-})
-
 router.get("/feed", async (req, res) => {
-const [tweets] = await pool.promise().query(`
-    SELECT tweet.*, user.name
-    FROM tweet
-    JOIN user ON tweet.author_id = user.id;`)
+  if (req.session.loggedin == true) {
+      const [tweets] = await pool.promise().query(`
+      SELECT tweet.*, user.name
+      FROM tweet
+      JOIN user ON tweet.author_id = user.id;`)
 
-    res.render("qveets.njk", {
-        title: "- -- --- --- ----- Qvitter ----- --- --- -- -",
-        tweets: tweets,
-    })
+      res.render("qveets.njk", {
+          title: "- -- --- --- ----- Qvitter ----- --- --- -- -",
+          tweets: tweets,
+      })
+  }
+  else {
+    res.redirect("/login")
+  }
 }) 
 
 router.get("/", (req, res) => {
@@ -46,25 +45,29 @@ router.post("/check", async (req, res) => {
 
   const [result] = await pool.promise().query('SELECT password FROM user WHERE name = ?', [name])
 
-
-  if (result == [""])
-  {
-    console.log("Bheif")
-  }
-
   console.log(result)
   console.log(password)
 
-  // bcrypt.compare(password, , function(err, result) {
-  //   if (result == true) {
-  //     console.log("Rätt")      
-  //   }
-  //   else {
-  //     console.log("Fel")
-  //   }
-  // })
-
-  res.redirect("/login")
+  if (result != "") {
+    bcrypt.compare(password, result[0].password , function(err, result) {
+      if (result == true) {
+        console.log("Rätt")
+        req.session.loggedin = true
+        console.log(req.session.loggedin)
+        res.redirect("/feed")
+      }
+      else {
+        req.session.loggedin = false
+        console.log("Fel")
+        res.redirect("/login")
+      }
+    })
+  }
+  else {
+    req.session.loggedin = false
+    console.log("Fel")
+    res.redirect("/login")
+  }
 })
 
 router.get("/register", async (req, res) => {
@@ -72,10 +75,13 @@ router.get("/register", async (req, res) => {
   res.render("register.njk")
 })
 
-router.post("/login", async (req, res) => {
+router.post("/create", async (req, res) => {
   const {name, password} = req.body
-
-  const [result] = await pool.promise().query('INSERT INTO user (name, password) VALUES (?, ?)', [name, password])
+  
+  bcrypt.hash(password, 10, async(err, hash) => {
+    const [result] = await pool.promise().query('INSERT INTO user (name, password) VALUES (?, ?)', [name, hash])
+    console.log(hash)
+  })
   res.redirect("/login")
 })
   
