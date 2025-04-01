@@ -3,6 +3,8 @@ import pool from "../db.js";
 import bodyParser from "body-parser";
 import bcrypt from "bcrypt"
 
+var currentName = ""
+
 const router = express.Router()
 
 router.use(bodyParser.urlencoded({extended: true}))
@@ -53,6 +55,7 @@ router.post("/check", async (req, res) => {
       if (result == true) {
         console.log("Rätt")
         req.session.loggedin = true
+        currentName = name
         console.log(req.session.loggedin)
         res.redirect("/feed")
       }
@@ -78,11 +81,18 @@ router.get("/register", async (req, res) => {
 router.post("/create", async (req, res) => {
   const {name, password} = req.body
   
-  bcrypt.hash(password, 10, async(err, hash) => {
-    const [result] = await pool.promise().query('INSERT INTO user (name, password) VALUES (?, ?)', [name, hash])
-    console.log(hash)
-  })
-  res.redirect("/login")
+  const [result] = await pool.promise().query('SELECT name FROM user WHERE name = ?', [name])
+
+  if (result == "") {
+    bcrypt.hash(password, 10, async(err, hash) => {
+      const [result] = await pool.promise().query('INSERT INTO user (name, password) VALUES (?, ?)', [name, hash])
+      console.log(hash)
+    })
+    res.redirect("/login")
+  }
+  else {
+    res.redirect("/register")
+  }
 })
   
 
@@ -90,7 +100,9 @@ router.post("/Qveets", async (req, res) => {
     
     const message = req.body.message
 
-    const author_id = 1
+    const [id] = await pool.promise().query('SELECT id FROM user WHERE name = ?', [currentName])
+
+    const author_id = id[0].id
 
     const [result] = await pool.promise().query('INSERT INTO tweet (message, author_id) VALUES (?, ?)', [message, author_id])
 
@@ -101,6 +113,11 @@ router.get("/post", async (req, res) => {
     res.render("post.njk", {
         title: "Qveet"
     })
+})
+
+router.get("/logout", async (req, res) => {
+  req.session.loggedin = false
+  res.redirect("/login")
 })
 
 export default router
